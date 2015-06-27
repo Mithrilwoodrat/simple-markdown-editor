@@ -1,0 +1,25 @@
+<html>
+<head>
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <script src="./jquery/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/markdown.min.js"></script>
+</head>
+<body>
+<div>
+    <div style="display: inline-block;width: 50%;">
+        <textarea id='editor' class="form-control" style="height: 100%"></textarea>
+    </div>
+    <div id='preview' style="display: inline-block;position: absolute;padding-top: 1px;"></div>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#editor').on('input', function() {
+            var md_content = $(this).val();
+            html_content = markdown.toHTML(md_content);
+            $('#preview').html(html_content);
+        });
+    });
+</script>
+</html>
