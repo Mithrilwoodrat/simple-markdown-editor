@@ -4,7 +4,24 @@
     <link rel="stylesheet" href="./css/highlight.min.css">
 </head>
 <style>
+body {
+    background-color: #333;
+}
+
+.linum {
+    display: inline-block;
+    width : 1.5%;
+    height: 100%;
+    color:white;
+    padding-top: 20px;
+    font-size:20px;
+    overflow:hidden;
+}
+
 .editor {
+    display: inline-block;
+    width: 50%;
+    height: 100%;
     border: none;
     border-right: 1px solid #ccc;
     resize: none;
@@ -12,25 +29,29 @@
     background-color: #f6f6f6;
     font-size: 20px;
     font-family: 'Monaco', courier, monospace;
-    padding: 20px;
+    padding-top: 20px;
+    padding-left: 20px;
 }
-.preview {
+
+
+
+.preview {    
+    width: 40%;
     display: inline-block;
     position: absolute;
-    padding-top: 1px;
+    padding-top: 20px;
+    word-wrap: break-word;
     padding-left: 50px;
     color:white;
     font-size: 20px;
 }
+
 </style>
-<body style="background-color: #333;">
+<body>
 <div>
-    <div style="display: inline-block;width: 50%;">
-        <textarea id='editor' class="editor form-control" style="height: 100%"></textarea>
-    </div>
-    <div class="preview">
-        <div id='preview'></div>
-    </div>
+    <div id="linum" class="linum"></div>
+    <textarea id='editor' class="editor" rows="100"></textarea>
+    <div id='preview' class="preview"></div>
 </div>
 </body>
 <script src="./jquery/jquery.min.js"></script>
@@ -38,13 +59,24 @@
 <script src="./js/markdown.min.js"></script>
 <script src="./js/highlight.min.js"></script>
 <script type="text/javascript">
+    function set_linum() {
+        line_num = $('#editor').height() / 20;// how many lines
+        $('#linum').height($('#editor').height());
+        for(var i=1;i<line_num;i++){
+            $('#linum').append(i+'</br>');
+        }
+        // add line number with textarea growing
+    }
+
     $(document).ready(function(){
+        set_linum();
         $('#editor').on('input', function() {
             var md_content = $(this).val();
             html_content = markdown.toHTML(md_content);
             $('#preview').html(html_content);
         });
-
+        
+        // hook keys
         $('#editor').on('keydown', function(e) {
             var keyCode = e.keyCode || e.which;
             // hook TAB key
