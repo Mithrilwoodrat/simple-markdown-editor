@@ -1,64 +1,64 @@
 <html>
-<head>
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/highlight.min.css">
-</head>
-<style>
-body {
-    background-color: #333;
-}
+    <head>
+        <link href="./css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/highlight.min.css">
+    </head>
+    <style>
+    body {
+        background-color: #333;
+    }
 
-.linum {
-    display: inline-block;
-    width : 1.5%;
-    height: 100%;
-    color:white;
-    padding-top: 20px;
-    font-size:20px;
-    overflow:hidden;
-}
+    .linum {
+        display: inline-block;
+        width : 1.5%;
+        height: 100%;
+        color:white;
+        padding-top: 20px;
+        font-size:20px;
+        overflow:hidden;
+    }
 
-.editor {
-    display: inline-block;
-    width: 50%;
-    height: 100%;
-    border: none;
-    border-right: 1px solid #ccc;
-    resize: none;
-    outline: none;
-    background-color: #f6f6f6;
-    font-size: 20px;
-    font-family: 'Monaco', courier, monospace;
-    padding-top: 20px;
-    padding-left: 20px;
-}
+    .editor {
+        display: inline-block;
+        width: 50%;
+        height: 100%;
+        border: none;
+        border-right: 1px solid #ccc;
+        resize: none;
+        outline: none;
+        background-color: #f6f6f6;
+        font-size: 20px;
+        font-family: 'Monaco', courier, monospace;
+        padding-top: 20px;
+        padding-left: 20px;
+    }
 
 
 
-.preview {    
-    width: 40%;
-    display: inline-block;
-    position: absolute;
-    padding-top: 20px;
-    word-wrap: break-word;
-    padding-left: 50px;
-    color:white;
-    font-size: 20px;
-}
+    .preview {    
+        width: 40%;
+        display: inline-block;
+        position: absolute;
+        padding-top: 20px;
+        word-wrap: break-word;
+        padding-left: 50px;
+        color:white;
+        font-size: 20px;
+    }
 
-</style>
-<body>
-<div>
-    <div id="linum" class="linum"></div>
-    <textarea id='editor' class="editor" rows="100"></textarea>
-    <div id='preview' class="preview"></div>
-</div>
-</body>
-<script src="./jquery/jquery.min.js"></script>
-<script src="./js/bootstrap.min.js"></script>
-<script src="./js/markdown.min.js"></script>
-<script src="./js/highlight.min.js"></script>
-<script type="text/javascript">
+    </style>
+    <body>
+        <div>
+            <div id="linum" class="linum"></div>
+            <textarea id='editor' class="editor" rows="100"></textarea>
+            <div id='preview' class="preview"></div>
+        </div>
+    </body>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/marked.min.js"></script>
+    <script src="./js/highlight.min.js"></script>
+    <script type="text/javascript">
     function set_linum() {
         line_num = $('#editor').height() / 20;// how many lines
         $('#linum').height($('#editor').height());
@@ -72,7 +72,7 @@ body {
         set_linum();
         $('#editor').on('input', function() {
             var md_content = $(this).val();
-            html_content = markdown.toHTML(md_content);
+            html_content = marked(md_content);
             $('#preview').html(html_content);
         });
         
@@ -81,21 +81,21 @@ body {
             var keyCode = e.keyCode || e.which;
             // hook TAB key
             if (keyCode == 9) {
-              e.preventDefault();
-              var start = $(this).get(0).selectionStart;
-              var end = $(this).get(0).selectionEnd;
+                e.preventDefault();
+                var start = $(this).get(0).selectionStart;
+                var end = $(this).get(0).selectionEnd;
 
-              // set textarea value to: text before caret + tab + text after caret
-              $(this).val($(this).val().substring(0, start)
-                + "\t"
-                + $(this).val().substring(end));
+                //space = String.fromCharCode(0x20);
+                $(this).val($(this).val().substring(0, start)
+                        + '    '
+                    + $(this).val().substring(end));
 
                 // put caret at right position again
                 $(this).get(0).selectionStart =
-                $(this).get(0).selectionEnd = start + 1;
+                $(this).get(0).selectionEnd = start + 4;
                 // call custom function here
-          }
+            }
         });
     });
-</script>
+    </script>
 </html>
