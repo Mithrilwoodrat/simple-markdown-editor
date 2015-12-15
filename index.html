@@ -74,6 +74,9 @@
             var md_content = $(this).val();
             html_content = marked(md_content);
             $('#preview').html(html_content);
+            $('pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
         });
         
         // hook keys
