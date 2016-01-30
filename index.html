@@ -1,49 +1,9 @@
 <html>
     <head>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/bootstrap.min.css">
         <link rel="stylesheet" href="./css/highlight.min.css">
+        <link rel="stylesheet" href="./css/common.css"
     </head>
-    <style>
-    body {
-        background-color: #333;
-    }
-
-    .linum {
-        display: inline-block;
-        width : 1.5%;
-        height: 100%;
-        color:white;
-        padding-top: 20px;
-        font-size:20px;
-        overflow:hidden;
-    }
-
-    .editor {
-        display: inline-block;
-        width: 50%;
-        height: 100%;
-        border: none;
-        border-right: 1px solid #ccc;
-        resize: none;
-        outline: none;
-        background-color: #f6f6f6;
-        font-size: 20px;
-        font-family: 'Monaco', courier, monospace;
-        padding-top: 20px;
-        padding-left: 20px;
-    }
-
-    .preview {    
-        width: 40%;
-        display: inline-block;
-        position: absolute;
-        padding-top: 20px;
-        padding-left: 50px;
-        color:white;
-        font-size: 20px;
-    }
-
-    </style>
     <body>
         <div>
             <div id="linum" class="linum"></div>
@@ -56,17 +16,34 @@
     <script src="./js/marked.min.js"></script>
     <script src="./js/highlight.min.js"></script>
     <script type="text/javascript">
+    old_linum = 1;
+    // add line number with textarea growing
     function set_linum() {
-        line_num = $('#editor').height() / 20;// how many lines
+        new_linum = $('#editor').height() / 15;// how many lines
         $('#linum').height($('#editor').height());
-        for(var i=1;i<line_num;i++){
+        for(i = old_linum;i < new_linum; i++){
             $('#linum').append(i+'</br>');
         }
-        // add line number with textarea growing
+        old_linum = new_linum;
     }
 
     $(document).ready(function(){
         set_linum();
+        is_grow = false;
+        $(document).on('keyup', 'textarea', function(e) {
+            //  the following will help the text expand as typing takes place
+            while($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth"))) {
+                $(this).height($(this).height()+1);
+                console.log($(this).height());
+                console.log($('#editor').height());
+                is_grow = true;
+            };
+            if (is_grow) {
+                set_linum();
+                is_grow = false;
+            }
+        });
+        
         $('#editor').on('input', function() {
             var md_content = $(this).val();
             html_content = marked(md_content);
@@ -85,7 +62,7 @@
                 var start = $(this).get(0).selectionStart;
                 var end = $(this).get(0).selectionEnd;
 
-                //space = String.fromCharCode(0x20);
+                // insert 4 spaces instead
                 $(this).val($(this).val().substring(0, start)
                         + '    '
                     + $(this).val().substring(end));
@@ -93,7 +70,6 @@
                 // put caret at right position again
                 $(this).get(0).selectionStart =
                 $(this).get(0).selectionEnd = start + 4;
-                // call custom function here
             }
         });
     });
