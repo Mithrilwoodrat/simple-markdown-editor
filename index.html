@@ -9,6 +9,7 @@
             <div id="linum" class="linum"></div>
             <textarea id='editor' class="editor" rows="100"></textarea>
             <div id='preview' class="preview"></div>
+            <button class="btn btn-default" style="position: fixed; top: 10px; right: 10px" onclick="restore();">Restore</button>
         </div>
     </body>
     <script src="./js/jquery.min.js"></script>
@@ -25,6 +26,23 @@
             $('#linum').append(i+'</br>');
         }
         old_linum = new_linum;
+    }
+    
+    function re_render () {
+        var md_content = $('#editor').val();
+        html_content = marked(md_content);
+        $('#preview').html(html_content);
+        $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+        });
+    };
+    
+    function restore() {
+        if (localStorage) {
+            backup = localStorage.getItem("backup");
+            $('#editor').val(backup);
+            re_render();
+        }
     }
 
     $(document).ready(function(){
@@ -44,14 +62,11 @@
             }
         });
 
-        function re_render () {
-            var md_content = $('#editor').val();
-            html_content = marked(md_content);
-            $('#preview').html(html_content);
-            $('pre code').each(function(i, block) {
-                hljs.highlightBlock(block);
-            });
-        };
+        function finish_typing () {
+            re_render();
+            // save content
+            localStorage.setItem("backup",md_content);
+        }
         
         //setup before functions
         var typingTimer;                //timer identifier
