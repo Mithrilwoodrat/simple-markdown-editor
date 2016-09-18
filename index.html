@@ -12,12 +12,27 @@
             <button class="btn btn-default" style="position: fixed; top: 10px; right: 10px" onclick="restore();">Restore</button>
         </div>
     </body>
-    <script src="./js/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://flowchart.js.org/flowchart-latest.js"></script>
+    <!-- <script src="./js/jquery.min.js"></script> -->
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/marked.min.js"></script>
     <script src="./js/highlight.min.js"></script>
     <script type="text/javascript">
-    old_linum = 1;
+    if (!String.prototype.format) {
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+                return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                ;
+            });
+        };
+    }
+    
+    var old_linum = 1;
     // add line number with textarea growing
     function set_linum() {
         new_linum = $('#editor').height() / 15;// how many lines
@@ -26,6 +41,21 @@
             $('#linum').append(i+'</br>');
         }
         old_linum = new_linum;
+    }
+
+    function draw_flow_chat() {
+        //flow-chat support
+        $('.lang-flow').each(function(i, block) {
+            console.log(block);
+            code = $(this).text();
+            diagram = flowchart.parse(code);
+            canvas_id = 'flow'+ i;
+            console.log(canvas_id);
+            temp = "<div id='{0}'> </div>".format(canvas_id);
+            console.log(temp);
+            $(this).html(temp);
+            diagram.drawSVG(canvas_id);	
+        });
     }
     
     function re_render () {
@@ -64,8 +94,9 @@
 
         function finish_typing () {
             re_render();
+            draw_flow_chat();
             // save content
-            localStorage.setItem("backup",md_content);
+            localStorage.setItem("backup",  $('#editor').val());
         }
         
         //setup before functions
@@ -76,7 +107,7 @@
         //on keyup, start the countdown
         $input.on('keyup', function () {
             clearTimeout(typingTimer);
-            typingTimer = setTimeout(re_render, doneTypingInterval);
+            typingTimer = setTimeout(finish_typing, doneTypingInterval);
         });
 
         //on keydown, clear the countdown 
