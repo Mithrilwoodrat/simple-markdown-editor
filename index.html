@@ -43,14 +43,30 @@
                 is_grow = false;
             }
         });
-        
-        $('#editor').on('input', function() {
-            var md_content = $(this).val();
+
+        function re_render () {
+            var md_content = $('#editor').val();
             html_content = marked(md_content);
             $('#preview').html(html_content);
             $('pre code').each(function(i, block) {
                 hljs.highlightBlock(block);
             });
+        };
+        
+        //setup before functions
+        var typingTimer;                //timer identifier
+        var doneTypingInterval = 1000;  //time in ms
+        var $input = $('#editor');
+
+        //on keyup, start the countdown
+        $input.on('keyup', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(re_render, doneTypingInterval);
+        });
+
+        //on keydown, clear the countdown 
+        $input.on('keydown', function () {
+            clearTimeout(typingTimer);
         });
         
         // hook keys
